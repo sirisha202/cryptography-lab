@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+void encipher();
+void decipher();
+int exitProgram();
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("1. Encrypt Text\n");
+        printf("2. Decrypt Text\n");
+        printf("3. Exit\n\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                encipher();
+                break;
+            case 2:
+                decipher();
+                break;
+            case 3:
+                return exitProgram();
+            default:
+                printf("Please enter a valid option.\n");
+        }
+    }
+
+    return 0;
+}
+
+void encipher() {
+    char input[50], key[10];
+    printf("Enter Plain Text: ");
+    scanf(" %[^\n]", input);
+    printf("Enter Key Value: ");
+    scanf(" %[^\n]", key);
+
+    printf("Resultant Cipher Text: ");
+    for (int i = 0, j = 0; i < strlen(input); i++, j++) {
+        if (j >= strlen(key)) {
+            j = 0;
+        }
+        char plainChar = toupper(input[i]);
+        char keyChar = toupper(key[j]);
+        char cipherChar;
+
+        if (isalpha(plainChar)) {
+            cipherChar = 'A' + ((plainChar - 'A' + keyChar - 'A') % 26);
+        } else {
+            cipherChar = plainChar;  
+        }
+
+        printf("%c", cipherChar);
+    }
+    printf("\n");
+}
+
+void decipher() {
+    char input[50], key[10];
+    printf("Enter Cipher Text: ");
+    scanf(" %[^\n]", input);
+    printf("Enter Key Value: ");
+    scanf(" %[^\n]", key);
+
+    printf("Resultant Plain Text: ");
+    for (int i = 0, j = 0; i < strlen(input); i++, j++) {
+        if (j >= strlen(key)) {
+            j = 0;
+        }
+        char cipherChar = toupper(input[i]);
+        char keyChar = toupper(key[j]);
+        char plainChar;
+
+        if (isalpha(cipherChar)) {
+            int shift = cipherChar - keyChar;
+            if (shift < 0) {
+                shift += 26;
+            }
+            plainChar = 'A' + shift;
+        } else {
+            plainChar = cipherChar;  
+        }
+
+        printf("%c", plainChar);
+    }
+    printf("\n");
+}
+
+int exitProgram() {
+    printf("Exiting the program. Goodbye!\n");
+    return 0;
+}
