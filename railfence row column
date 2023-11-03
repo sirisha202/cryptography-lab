@@ -1,0 +1,150 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void encryptRailFence(char* plaintext, int rails);
+void decryptRailFence(char* ciphertext, int rails);
+
+int main() {
+    int choice, rails;
+    char text[1000];
+
+    while (1) {
+        printf("1. Encrypt (Rail Fence)\n");
+        printf("2. Decrypt (Rail Fence)\n");
+        printf("3. Exit\n\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the text to encrypt: ");
+                scanf(" %[^\n]", text);
+                printf("Enter the number of rails: ");
+                scanf("%d", &rails);
+                encryptRailFence(text, rails);
+                break;
+            case 2:
+                printf("Enter the text to decrypt: ");
+                scanf(" %[^\n]", text);
+                printf("Enter the number of rails: ");
+                scanf("%d", &rails);
+                decryptRailFence(text, rails);
+                break;
+            case 3:
+                return 0;
+            default:
+                printf("Please enter a valid option.\n");
+        }
+    }
+
+    return 0;
+}
+
+void encryptRailFence(char* plaintext, int rails) {
+    int len = strlen(plaintext);
+    char railFence[rails][len];
+    char ciphertext[len];
+    int row = 0, col = 0;
+    int direction = 0; 
+
+    for (int i = 0; i < rails; i++) {
+        for (int j = 0; j < len; j++) {
+            railFence[i][j] = '\0';
+        }
+    }
+
+    for (int i = 0; i < len; i++) {
+        if (row == 0) {
+            direction = 0;
+        } else if (row == rails - 1) {
+            direction = 1;
+        }
+        
+        railFence[row][col] = plaintext[i];
+        col++;
+
+        if (direction == 0) {
+            row++;
+        } else {
+            row--;
+        }
+    }
+
+    int index = 0;
+    for (int i = 0; i < rails; i++) {
+        for (int j = 0; j < len; j++) {
+            if (railFence[i][j] != '\0') {
+                ciphertext[index] = railFence[i][j];
+                index++;
+            }
+        }
+    }
+
+    ciphertext[len] = '\0';
+    printf("Encrypted Text: %s\n", ciphertext);
+}
+
+void decryptRailFence(char* ciphertext, int rails) {
+    int len = strlen(ciphertext);
+    char railFence[rails][len];
+    char plaintext[len];
+    int row = 0, col = 0;
+    int direction = 0;  
+
+    for (int i = 0; i < rails; i++) {
+        for (int j = 0; j < len; j++) {
+            railFence[i][j] = '\0';
+        }
+    }
+
+    for (int i = 0; i < len; i++) {
+        if (row == 0) {
+            direction = 0;
+        } else if (row == rails - 1) {
+            direction = 1;
+        }
+        
+        railFence[row][col] = 'X';  
+        col++;
+
+        if (direction == 0) {
+            row++;
+        } else {
+            row--;
+        }
+    }
+
+    int index = 0;
+    for (int i = 0; i < rails; i++) {
+        for (int j = 0; j < len; j++) {
+            if (railFence[i][j] == 'X') {
+                railFence[i][j] = ciphertext[index];
+                index++;
+            }
+        }
+    }
+
+    row = 0;
+    col = 0;
+    direction = 0;
+    for (int i = 0; i < len; i++) {
+        if (row == 0) {
+            direction = 0;
+        } else if (row == rails - 1) {
+            direction = 1;
+        }
+        
+        plaintext[i] = railFence[row][col];
+        col++;
+
+        if (direction == 0) {
+            row++;
+        } else {
+            row--;
+        }
+    }
+
+    plaintext[len] = '\0';
+    printf("Decrypted Text: %s\n", plaintext);
+}
